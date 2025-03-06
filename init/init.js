@@ -22,7 +22,7 @@ const insertProject = async () => {
         await connectDB();
 
         const newProject = new Project({
-            name: "My First Project"
+            name: "Football"
         });
 
         const savedProject = await newProject.save();

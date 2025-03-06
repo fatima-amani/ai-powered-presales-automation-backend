@@ -5,7 +5,7 @@ const Requirement = require("../models/Requirement");
 
 const uploadRequirement = async (req, res) => {
     try {
-        const { projectId, requirement_text } = req.body;
+        const { projectId, requirementText } = req.body;
 
         if (!req.file) {
             return res.status(400).json({ error: "File is required" });
@@ -18,8 +18,8 @@ const uploadRequirement = async (req, res) => {
         console.log("Uploaded file details:", req.file);
 
         const requirement = new Requirement({
-            requirement_text,
-            requirement_file_url: req.file.path,
+            requirementText,
+            requirementFileUrl: req.file.path,
         });
 
         await requirement.save();
@@ -65,8 +65,18 @@ const extractRequirements = async (req, res) => {
             return res.status(404).json({ error: "No requirements found for this project" });
         }
 
+        // Check if the fields already exist
+        if (latestRequirement.functionalRequirement && latestRequirement.nonFunctionalRequirement && latestRequirement.featureBreakdown) {
+            return res.status(200).json({
+                message: "Requirements already extracted",
+                functionalRequirement: latestRequirement.functionalRequirement,
+                nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
+                featureBreakdown: latestRequirement.featureBreakdown
+            });
+        }
+
         // Extract the PDF URL
-        const pdfUrl = latestRequirement.requirement_file_url;
+        const pdfUrl = latestRequirement.requirementFileUrl;
         if (!pdfUrl) {
             return res.status(400).json({ error: "Requirement file URL is missing" });
         }
@@ -79,18 +89,32 @@ const extractRequirements = async (req, res) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ url: pdfUrl, requirement_text: latestRequirement.requirement_text }),
+            body: JSON.stringify({ url: pdfUrl, requirement_text: latestRequirement.requirementText }),
         });
 
         const result = await response.json();
+        console.log("FastAPI Response:", result);
 
         if (!response.ok) {
             throw new Error(`FastAPI Error: ${result.error || "Unknown error"}`);
         }
 
+        // Parse the data from the FastAPI response
+        const data = JSON.parse(result.data);
+
+        // Update the requirement with the new fields
+        latestRequirement.functionalRequirement = data.functional_requirements;
+        latestRequirement.nonFunctionalRequirement = data.non_functional_requirements;
+        latestRequirement.featureBreakdown = data.feature_breakdown;
+
+        // Save the updated requirement
+        await latestRequirement.save();
+
         return res.status(200).json({
-            message: "PDF URL sent successfully",
-            fastApiResponse: result,
+            message: "PDF URL sent successfully and requirements extracted",
+            functionalRequirement: latestRequirement.functionalRequirement,
+            nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
+            featureBreakdown: latestRequirement.featureBreakdown
         });
 
     } catch (error) {
@@ -101,6 +125,5 @@ const extractRequirements = async (req, res) => {
         res.status(500).json({ error: errorMessage || "Internal Server Error" });
     }
 };
-
 
 module.exports = { uploadRequirement, extractRequirements };
