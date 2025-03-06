@@ -1,6 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const Project = require("../models/Project"); // Adjust path if needed
+const Project = require("../models/project"); // Adjust path if needed
 
 // MongoDB Connection
 const connectDB = async () => {

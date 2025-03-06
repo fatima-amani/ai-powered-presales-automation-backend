@@ -1,5 +1,5 @@
 const express = require("express");
-const { generateTechStack } = require("../controllers/techArchitecture");
+const { generateTechStack, generateArchitectureDiagram } = require("../controllers/techArchitecture");
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ const router = express.Router();
 router.get("/generate-tech-stack/:id", generateTechStack);
 
 // Route to generate architecture diagram
-// router.post("/generate-architecture-diagram/:id", generateArchitectureDiagram);
+router.get("/generate-architecture-diagram/:id", generateArchitectureDiagram);
 
 module.exports = router;
