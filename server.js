@@ -13,6 +13,7 @@ const upload = multer({ dest: "uploads/" });
 const reqAnalysisRouter = require("./routes/reqAnalysis.js");
 const projectRouter = require("./routes/project.js");
 const userRoutes = require("./routes/user");
+const techArchitectureRoutes = require("./routes/techArchitecture");
 
 
 // const session = require("express-session");
@@ -40,6 +41,7 @@ main()
 app.use("/project",projectRouter);
 app.use("/user", userRoutes);
 app.use("/requirment-analysis", reqAnalysisRouter);
+app.use("/tech-architecture", techArchitectureRoutes);
 
 
 app.all("*", (req, res, next) => {
