@@ -11,10 +11,12 @@ const upload = multer({ dest: "uploads/" });
 // const ExpressError = require("./utils/ExpressError.js");
 
 const reqAnalysisRouter = require("./routes/reqAnalysis.js");
+const projectRouter = require("./routes/project.js");
 
 // const session = require("express-session");
 // const flash = require("connect-flash");
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
@@ -34,6 +36,7 @@ main()
   });
 
 app.use("/requirment-analysis", reqAnalysisRouter);
+app.use("/project",projectRouter);
 
 
 app.all("*", (req, res, next) => {

@@ -1,5 +1,5 @@
 const { cloudinary } = require("../config/cloudinaryConfig");
-const Project = require("../models/Project");
+const Project = require("../models/project");
 const Requirement = require("../models/Requirement");
 
 
