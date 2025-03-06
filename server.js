@@ -4,6 +4,9 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const methodOverride = require("method-override");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dbUrl = process.env.MONGO_URL;
 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
@@ -19,12 +22,17 @@ const techArchitectureRoutes = require("./routes/techArchitecture");
 // const session = require("express-session");
 // const flash = require("connect-flash");
 
+app.use(cors({
+  origin: '*',  // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const mongoose = require("mongoose");
-const dbUrl = process.env.MONGO_URL;
+
 
 async function main() {
   await mongoose.connect(dbUrl);
