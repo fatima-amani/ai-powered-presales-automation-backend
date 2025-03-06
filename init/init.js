@@ -16,23 +16,30 @@ const connectDB = async () => {
     }
 };
 
-// Insert a new project
-const insertProject = async () => {
+// Function to delete the `techStacks` field
+const deleteTechStacksField = async () => {
     try {
         await connectDB();
 
-        const newProject = new Project({
-            name: "Football"
-        });
+        const projectId = "67c9b4d7c7f46698c466f16a"; // Replace with your project ID
 
-        const savedProject = await newProject.save();
-        console.log("✅ Project Inserted. ID:", savedProject._id);
+        // Use $unset to remove the `techStacks` field
+        const result = await Project.updateOne(
+            { _id: projectId }, // Filter by project ID
+            { $unset: { techStacks: "" } } // Remove the `techStacks` field
+        );
+
+        if (result.modifiedCount > 0) {
+            console.log("✅ `techStacks` field deleted successfully.");
+        } else {
+            console.log("⚠️ No document was updated. Check if the project ID is correct.");
+        }
 
         mongoose.connection.close();
     } catch (error) {
-        console.error("Error inserting project:", error);
+        console.error("Error deleting `techStacks` field:", error);
     }
 };
 
 // Run the function
-insertProject();
+deleteTechStacksField();

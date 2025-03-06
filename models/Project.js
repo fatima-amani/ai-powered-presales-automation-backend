@@ -7,6 +7,8 @@ const ProjectSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     assignedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     updatedAt: { type: Date },
+    techStacks: { type: mongoose.Schema.Types.ObjectId, ref: "TechStack" }, // Add this line
+
 });
 
 module.exports = mongoose.model("Project", ProjectSchema);
