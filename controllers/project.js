@@ -4,7 +4,7 @@ const User = require('../models/user');
 // Get all projects
 module.exports.getAllProjects = async (req, res) => {
     try {
-        const projects = await Project.find();
+        const projects = await Project.find().populate("techStacks requirements");
         res.status(200).json(projects);
     } catch (error) {
         res.status(500).json({ message: error.message });
