@@ -23,7 +23,8 @@ const techArchitectureRoutes = require("./routes/techArchitecture");
 // const flash = require("connect-flash");
 
 app.use(cors({
-  origin: '*',  // Allow all origins
+  origin: 'http://localhost:3000',
+  credentials: true,  // Add this line
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
