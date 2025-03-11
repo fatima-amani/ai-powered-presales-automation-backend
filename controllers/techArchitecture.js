@@ -147,6 +147,8 @@ module.exports.generateArchitectureDiagram = async (req, res) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ requirements: requestBody, tech_stack: techStack }),
     });
+    
+    
 
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
@@ -154,6 +156,7 @@ module.exports.generateArchitectureDiagram = async (req, res) => {
     }
 
     const diagramData = await apiResponse.json();
+    console.log(diagramData);
     return res.status(200).json({
       message: "Architecture diagram generated successfully",
       diagram: diagramData,
