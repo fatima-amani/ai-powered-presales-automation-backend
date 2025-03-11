@@ -10,6 +10,8 @@ const ProjectSchema = new mongoose.Schema({
     techStacks: { type: mongoose.Schema.Types.ObjectId, ref: "TechStack" },
     architectureDiagram: { type: mongoose.Schema.Types.ObjectId, ref: "ArchitectureDiagram" },
     effortEstimationUrl: { type: String },
+    userPersona: { type: mongoose.Schema.Types.ObjectId, ref: "UserPersona" },
+
 });
 
 module.exports = mongoose.model("Project", ProjectSchema);
