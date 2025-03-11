@@ -8,7 +8,8 @@ const ProjectSchema = new mongoose.Schema({
     assignedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     updatedAt: { type: Date },
     techStacks: { type: mongoose.Schema.Types.ObjectId, ref: "TechStack" },
-    architectureDiagram: { type: mongoose.Schema.Types.ObjectId, ref: "ArchitectureDiagram" }
+    architectureDiagram: { type: mongoose.Schema.Types.ObjectId, ref: "ArchitectureDiagram" },
+    effortEstimationUrl: { type: String },
 });
 
 module.exports = mongoose.model("Project", ProjectSchema);

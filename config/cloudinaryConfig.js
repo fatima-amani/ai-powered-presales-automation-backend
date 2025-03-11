@@ -11,7 +11,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "pre_sales_automation_dev",
-        allowed_formats: ["pdf", "doc", "docx"],
+        allowed_formats: ["pdf", "doc", "docx", "xls", "xlsx"],
       },
 });
 

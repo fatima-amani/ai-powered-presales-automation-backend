@@ -17,6 +17,8 @@ const reqAnalysisRouter = require("./routes/reqAnalysis.js");
 const projectRouter = require("./routes/project.js");
 const userRoutes = require("./routes/user");
 const techArchitectureRoutes = require("./routes/techArchitecture");
+const effortEstimationRoutes = require("./routes/estimation");
+
 
 
 // const session = require("express-session");
@@ -51,6 +53,8 @@ app.use("/project",projectRouter);
 app.use("/user", userRoutes);
 app.use("/requirment-analysis", reqAnalysisRouter);
 app.use("/tech-architecture", techArchitectureRoutes);
+app.use("/estimation", effortEstimationRoutes);
+
 
 
 app.all("*", (req, res, next) => {
