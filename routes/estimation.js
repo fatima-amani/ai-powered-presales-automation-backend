@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { generateEffortEstimation } = require("../controllers/estimation");
 
-router.post("/:id", generateEffortEstimation);
+router.get("/:id", generateEffortEstimation);
 
 module.exports = router;

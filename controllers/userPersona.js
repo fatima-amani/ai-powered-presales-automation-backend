@@ -15,7 +15,7 @@ module.exports.generateUserPersona = async (req, res) => {
             return res.status(404).json({ error: "Project not found" });
         }
 
-        // Check if user persona is already generated
+        // Check if user persona already exists
         if (project.userPersona) {
             const existingPersona = await UserPersona.findById(project.userPersona);
             return res.status(200).json({
@@ -24,7 +24,6 @@ module.exports.generateUserPersona = async (req, res) => {
             });
         }
 
-        // Ensure requirements exist
         if (!project.requirements || project.requirements.length === 0) {
             return res.status(400).json({ error: "No requirements found for this project." });
         }
@@ -39,7 +38,8 @@ module.exports.generateUserPersona = async (req, res) => {
                 featureBreakdown: latestRequirement.featureBreakdown || [],
             },
         };
-        console.log("request body: ",requestBody);
+
+        // console.log("Request Body:", requestBody);
 
         // Call FastAPI to generate user persona
         const apiResponse = await fetch("http://localhost:8000/generate-user-persona", {
@@ -54,24 +54,37 @@ module.exports.generateUserPersona = async (req, res) => {
         }
 
         const personaData = await apiResponse.json();
-        console.log("api response: ",personaData);
+        console.log("API Response:", personaData);
 
-        // Store in MongoDB
+        if (!personaData.user_persona || !personaData.categorized_features) {
+            throw new Error("Invalid response format from FastAPI");
+        }
+
+        // Store user persona in MongoDB
         const newUserPersona = new UserPersona({
-            project: project._id,
-            personas: personaData.personas,
+            personas: personaData.user_persona.personas,
+            categorized_features: {
+                feature_categories: {
+                    must_have: personaData.categorized_features.feature_categories.must_have,
+                    nice_to_have: personaData.categorized_features.feature_categories.nice_to_have,
+                    future_enhancements: personaData.categorized_features.feature_categories.future_enhancements
+                }
+            }
         });
+
         await newUserPersona.save();
 
-        // Update project with persona reference
+        // Update project with user persona reference
         project.userPersona = newUserPersona._id;
         await project.save();
 
-        console.log("User Persona generated and stored successfully: ",newUserPersona);
+        console.log("User Persona generated and stored successfully:", newUserPersona);
+
         return res.status(200).json({
             message: "User persona generated and stored successfully",
             userPersona: newUserPersona,
         });
+
     } catch (error) {
         console.error("User Persona Generation Error:", error);
         res.status(500).json({ error: error.message || "Internal Server Error" });
