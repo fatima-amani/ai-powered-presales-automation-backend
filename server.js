@@ -19,6 +19,7 @@ const userRoutes = require("./routes/user");
 const techArchitectureRoutes = require("./routes/techArchitecture");
 const effortEstimationRoutes = require("./routes/estimation");
 const userPersonaRoutes = require("./routes/userPersona");
+const wireframeRoutes = require("./routes/wireframe");
 
 
 
@@ -56,6 +57,7 @@ app.use("/requirment-analysis", reqAnalysisRouter);
 app.use("/tech-architecture", techArchitectureRoutes);
 app.use("/estimation", effortEstimationRoutes);
 app.use("/user-persona", userPersonaRoutes);
+app.use("/wireframe",wireframeRoutes);
 
 
 

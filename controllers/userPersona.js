@@ -54,7 +54,7 @@ module.exports.generateUserPersona = async (req, res) => {
         }
 
         const personaData = await apiResponse.json();
-        console.log("API Response:", personaData);
+        // console.log("API Response:", personaData);
 
         if (!personaData.user_persona || !personaData.categorized_features) {
             throw new Error("Invalid response format from FastAPI");
@@ -78,7 +78,7 @@ module.exports.generateUserPersona = async (req, res) => {
         project.userPersona = newUserPersona._id;
         await project.save();
 
-        console.log("User Persona generated and stored successfully:", newUserPersona);
+        // console.log("User Persona generated and stored successfully:", newUserPersona);
 
         return res.status(200).json({
             message: "User persona generated and stored successfully",
