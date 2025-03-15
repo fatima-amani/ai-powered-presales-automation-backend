@@ -2,14 +2,11 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const path = require("path");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const dbUrl = process.env.MONGO_URL;
-
+const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
 
 // const ExpressError = require("./utils/ExpressError.js");
 
@@ -20,11 +17,9 @@ const techArchitectureRoutes = require("./routes/techArchitecture");
 const effortEstimationRoutes = require("./routes/estimation");
 const userPersonaRoutes = require("./routes/userPersona");
 const wireframeRoutes = require("./routes/wireframe");
+const AuthRoutes = require("./routes/auth");
 
-
-
-// const session = require("express-session");
-// const flash = require("connect-flash");
+const dbUrl = process.env.MONGO_URL;
 
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -34,6 +29,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser()); // Enable cookie parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
@@ -58,6 +54,7 @@ app.use("/tech-architecture", techArchitectureRoutes);
 app.use("/estimation", effortEstimationRoutes);
 app.use("/user-persona", userPersonaRoutes);
 app.use("/wireframe",wireframeRoutes);
+app.use("/auth", AuthRoutes);
 
 
 

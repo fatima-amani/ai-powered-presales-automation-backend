@@ -1,13 +1,14 @@
 const express = require('express');
 const projectController = require('../controllers/project');
+const { verifyToken, checkProjectAccess } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 // Route to get all projects
-router.get('/', projectController.getAllProjects);
+router.get('/', verifyToken, projectController.getAllProjects);
 
 // Route to get a single project by ID
-router.get('/:id', projectController.getProjectById);
+router.get('/:id', verifyToken, checkProjectAccess, projectController.getProjectById);
 
 // Route to create a new project
 router.post('/', projectController.createProject);
