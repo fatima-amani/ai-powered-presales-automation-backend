@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Project = require("../models/project");
+const mongoose = require("mongoose");
 // const User = require("../models/User");
 
 require("dotenv").config();
@@ -31,13 +32,24 @@ const checkProjectAccess = async (req, res, next) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    // Check if user is the creator or an assigned user
-    if (project.createdBy.toString() !== req.user.id || !project.assignedUsers.includes(req.user.id)) {
-      return res.status(403).json({ error: "Access denied. You are not authorized to view this project." });
+    const isCreator = project.createdBy.equals(
+      new mongoose.Types.ObjectId(req.user.id)
+    );
+    const isAssigned = project.assignedUsers.some((user) =>
+      user.equals(new mongoose.Types.ObjectId(req.user.id))
+    );
+
+    if (!isCreator && !isAssigned) {
+      return res
+        .status(403)
+        .json({
+          error: "Access denied. You are not authorized to view this project.",
+        });
     }
 
     next();
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

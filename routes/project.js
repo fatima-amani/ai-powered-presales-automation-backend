@@ -11,12 +11,12 @@ router.get('/', verifyToken, projectController.getAllProjects);
 router.get('/:id', verifyToken, checkProjectAccess, projectController.getProjectById);
 
 // Route to create a new project
-router.post('/', projectController.createProject);
+router.post('/', verifyToken, projectController.createProject);
 
 // Route to update an existing project by ID
 // router.put('/:id', projectController.updateProject);
 
 // Route to delete a project by ID
-router.delete('/:id', projectController.deleteProject);
+router.delete('/:id', verifyToken, checkProjectAccess, projectController.deleteProject);
 
 module.exports = router;
