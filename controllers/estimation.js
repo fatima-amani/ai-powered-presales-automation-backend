@@ -12,6 +12,10 @@ module.exports.generateEffortEstimation = async (req, res) => {
     try {
         const { id } = req.params;
 
+        if(req.user.role == "junior") {
+            return res.status(403).json({ error: "Access denied. Only users with the role 'head' and 'associate' can perform this action." });
+        }
+        
         if (!id) {
             return res.status(400).json({ error: "Project ID is required" });
         }

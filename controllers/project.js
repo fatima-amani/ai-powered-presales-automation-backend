@@ -4,14 +4,19 @@ const User = require('../models/user');
 // Get all projects
 module.exports.getAllProjects = async (req, res) => {
     try {
+      if(req.user.role == "head") {
+        const projects = await Project.find().populate("assignedUsers");
+        return res.status(200).json(projects);
+      }
+
       const userId = req.user.id; // Get user ID from JWT middleware (ensure middleware adds req.user)
-  
+      
       const projects = await Project.find({
         $or: [
           { createdBy: userId },                // Projects where user is creator
           { assignedUsers: { $in: [userId] } } // Projects where user is in assignedUsers
         ]
-      }).populate("techStacks requirements assignedUsers");
+      }).populate("assignedUsers");
   
       res.status(200).json(projects);
     } catch (error) {

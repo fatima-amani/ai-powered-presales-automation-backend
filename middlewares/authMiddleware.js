@@ -25,6 +25,11 @@ const verifyToken = (req, res, next) => {
 // Middleware to check if user has access to a project
 const checkProjectAccess = async (req, res, next) => {
   try {
+
+    if(req.user.role == "head") {
+      next();
+      return;
+    }
     const projectId = req.params.id;
     const project = await Project.findById(projectId);
 
