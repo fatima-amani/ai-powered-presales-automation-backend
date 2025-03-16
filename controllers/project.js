@@ -4,12 +4,21 @@ const User = require('../models/user');
 // Get all projects
 module.exports.getAllProjects = async (req, res) => {
     try {
-        const projects = await Project.find().populate("techStacks requirements");
-        res.status(200).json(projects);
+      const userId = req.user.id; // Get user ID from JWT middleware (ensure middleware adds req.user)
+  
+      const projects = await Project.find({
+        $or: [
+          { createdBy: userId },                // Projects where user is creator
+          { assignedUsers: { $in: [userId] } } // Projects where user is in assignedUsers
+        ]
+      }).populate("techStacks requirements assignedUsers");
+  
+      res.status(200).json(projects);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
-};
+  };
+  
 
 // Get project by ID
 module.exports.getProjectById = async (req, res) => {
