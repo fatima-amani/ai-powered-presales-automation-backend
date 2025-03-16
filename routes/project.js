@@ -19,4 +19,18 @@ router.post('/', verifyToken, projectController.createProject);
 // Route to delete a project by ID
 router.delete('/:id', verifyToken, checkProjectAccess, projectController.deleteProject);
 
+// Assign user
+router.post(
+    "/:id/assign/:userId",
+    verifyToken,
+    projectController.assignUserToProject
+  );
+  
+  // Unassign user
+  router.post(
+    "/:id/unassign/:userId",
+    verifyToken,
+    projectController.unassignUserFromProject
+  );
+
 module.exports = router;
