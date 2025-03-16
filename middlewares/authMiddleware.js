@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Project = require("../models/project");
 const mongoose = require("mongoose");
-// const User = require("../models/User");
+const User = require("../models/user");
 
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ const verifyToken = (req, res, next) => {
   const token = req.cookies.token; // Get token from cookie
 
   if (!token) {
-    return res.status(401).json({ error: "Access Denied. No token provided." });
+    return res.status(401).json({ error: "Access Denied. Kindly Login First." });
   }
 
   try {
@@ -54,4 +54,19 @@ const checkProjectAccess = async (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken, checkProjectAccess };
+const checkHeadRole = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);  // Get user ID from JWT middleware (ensure middleware adds req.user)
+    if (user.role !== "head") {
+      return res.status(403).json({ error: "Access denied. Only users with the role 'head' can perform this action." });
+    } else {
+      next();
+    }
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+module.exports = { verifyToken, checkProjectAccess, checkHeadRole };
