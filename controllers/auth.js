@@ -45,19 +45,30 @@ module.exports.login = async (req, res) => {
     }
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
 
-    // Set token in HTTP-only cookie (More Secure)
+    // Set token in HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true, // Prevents JavaScript access
-      secure: process.env.NODE_ENV === "production", // Only HTTPS in production
-      sameSite: "Strict", // Protect against CSRF
-      maxAge: 24 * 60 * 60 * 1000, // 1 Day expiration
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login successful" });
+    // Send user data in response
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
