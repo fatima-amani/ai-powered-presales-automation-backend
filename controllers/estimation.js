@@ -14,12 +14,10 @@ module.exports.generateEffortEstimation = async (req, res) => {
     const { id } = req.params;
 
     if (req.user.role == "junior") {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Access denied. Only users with the role 'head' and 'associate' can perform this action.",
-        });
+      return res.status(403).json({
+        error:
+          "Access denied. Only users with the role 'head' and 'associate' can perform this action.",
+      });
     }
 
     if (!id) {
@@ -46,8 +44,9 @@ module.exports.generateEffortEstimation = async (req, res) => {
         .json({ error: "No requirements found for this project." });
     }
 
-    const latestRequirement =
-      Requirement.findById(project.requirements[project.requirements.length - 1]);
+    const latestRequirement = Requirement.findById(
+      project.requirements[project.requirements.length - 1]
+    );
 
     // Prepare request body
     const requestBody = {
@@ -117,6 +116,13 @@ module.exports.generateEffortEstimation = async (req, res) => {
 };
 
 module.exports.getEffortEstimationbyVersion = async (req, res) => {
+  if (req.user.role == "junior") {
+    return res.status(403).json({
+      error:
+        "Access denied. Only users with the role 'head' and 'associate' can perform this action.",
+    });
+  }
+
   try {
     const { id, version } = req.params;
 
