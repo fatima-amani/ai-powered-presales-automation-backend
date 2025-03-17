@@ -3,40 +3,92 @@ const User = require('../models/user');
 
 // Get all projects
 module.exports.getAllProjects = async (req, res) => {
-    try {
-      if(req.user.role == "head") {
-        const projects = await Project.find().populate("assignedUsers");
-        return res.status(200).json(projects);
-      }
+  try {
+    let projects;
 
-      const userId = req.user.id; // Get user ID from JWT middleware (ensure middleware adds req.user)
-      
-      const projects = await Project.find({
+    if (req.user.role === "head") {
+      projects = await Project.find().populate("assignedUsers");
+    } else {
+      const userId = req.user.id;
+      projects = await Project.find({
         $or: [
-          { createdBy: userId },                // Projects where user is creator
-          { assignedUsers: { $in: [userId] } } // Projects where user is in assignedUsers
+          { createdBy: userId },
+          { assignedUsers: { $in: [userId] } }
         ]
       }).populate("assignedUsers");
-  
-      res.status(200).json(projects);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
     }
-  };
+
+    // For each project, fetch its versions and format
+    const projectsWithVersions = await Promise.all(projects.map(async (project) => {
+      const versions = await project.getVersions();
+
+      const formattedVersions = await Promise.all(versions.map(async (version) => {
+        let updatedByName = "Unknown";
+
+        // If metadata exists and userId present
+        if (version.metadata && version.metadata.userId) {
+          const user = await User.findById(version.metadata.userId);
+          if (user) updatedByName = user.name;
+        }
+
+        return {
+          version: version.version, // e.g. "1.0.0"
+          updatedBy: updatedByName,
+          timestamp: version.timestamp
+        };
+      }));
+
+      return {
+        ...project.toObject(),
+        versions: formattedVersions
+      };
+    }));
+
+    res.status(200).json(projectsWithVersions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
   
 
-// Get project by ID
 module.exports.getProjectById = async (req, res) => {
-    try {
-        const project = await Project.findById(req.params.id);
-        if (!project) {
-            return res.status(404).json({ message: 'Project not found' });
-        }
-        res.status(200).json(project);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const project = await Project.findById(req.params.id).populate("assignedUsers");
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
     }
+
+    const versions = await project.getVersions();
+
+    const formattedVersions = await Promise.all(versions.map(async (version) => {
+      let updatedByName = "Unknown";
+
+      if (version.metadata && version.metadata.userId) {
+        const user = await User.findById(version.metadata.userId);
+        if (user) updatedByName = user.name;
+      }
+
+      return {
+        version: version.version,
+        updatedBy: updatedByName,
+        timestamp: version.timestamp
+      };
+    }));
+
+    const projectWithVersions = {
+      ...project.toObject(),
+      versions: formattedVersions
+    };
+
+    res.status(200).json(projectWithVersions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 // Create a new project
 module.exports.createProject = async (req, res) => {

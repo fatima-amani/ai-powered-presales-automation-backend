@@ -20,6 +20,6 @@ const historyOptions = {
 };
 
 // Pass mongoose as a separate parameter
-ProjectSchema.plugin(mongooseHistory(mongoose), historyOptions);
+ProjectSchema.plugin(mongooseHistory(mongoose), { metadata: ['userId'] });
 
 module.exports = mongoose.models.Project || mongoose.model("Project", ProjectSchema);
