@@ -40,11 +40,12 @@ module.exports.getProjectById = async (req, res) => {
 
 // Create a new project
 module.exports.createProject = async (req, res) => {
-    const { name, createdBy } = req.body; // Extract name and createdBy from the request body
+    const { name } = req.body; // Extract name and createdBy from the request body
+    const createdBy = req.user.id; 
 
     // Validate required fields
-    if (!name || !createdBy) {
-        return res.status(400).json({ message: "Name and createdBy are required fields." });
+    if (!name) {
+        return res.status(400).json({ message: "Project Name are required fields." });
     }
 
     try {
@@ -65,7 +66,7 @@ module.exports.createProject = async (req, res) => {
         });
 
         // Save the project to the database
-        const newProject = await project.save();
+        const newProject = await project.save({ metadata: { userId: req.user.id } });
 
         // Return the newly created project
         res.status(201).json(newProject);
@@ -135,7 +136,7 @@ module.exports.assignUserToProject = async (req, res) => {
       }
   
       project.assignedUsers.push(userId);
-      await project.save();
+      await project.save({ metadata: { userId: req.user.id } });
   
       res.status(200).json({ message: "User assigned successfully", project });
     } catch (error) {
@@ -167,7 +168,7 @@ module.exports.assignUserToProject = async (req, res) => {
         (assignedUserId) => assignedUserId.toString() !== userId
       );
   
-      await project.save();
+      await project.save({ metadata: { userId: req.user.id } });
   
       res.status(200).json({ message: "User unassigned successfully", project });
     } catch (error) {

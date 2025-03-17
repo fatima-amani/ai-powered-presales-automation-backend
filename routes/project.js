@@ -37,8 +37,8 @@ router.post(
   );
 
   // Route to get project versions
-router.get('/:id/versions', projectController.getProjectVersions);
-router.get('/:id/versions/:version', projectController.getProjectVersion);
+router.get('/:id/versions', verifyToken, checkProjectAccess, projectController.getProjectVersions);
+router.get('/:id/versions/:version', verifyToken,checkProjectAccess, projectController.getProjectVersion);
 
 
 module.exports = router;
