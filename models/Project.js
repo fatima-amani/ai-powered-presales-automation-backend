@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseHistory = require('mongoose-history-plugin');
 
 const ProjectSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -11,7 +12,14 @@ const ProjectSchema = new mongoose.Schema({
     architectureDiagram: { type: mongoose.Schema.Types.ObjectId, ref: "ArchitectureDiagram" },
     effortEstimationUrl: { type: String },
     userPersona: { type: mongoose.Schema.Types.ObjectId, ref: "UserPersona" },
-
 });
+
+// Options for the history plugin - without mongoose parameter
+const historyOptions = {
+    metadata: ['userId'] // Track the user ID responsible for changes
+};
+
+// Pass mongoose as a separate parameter
+ProjectSchema.plugin(mongooseHistory(mongoose), historyOptions);
 
 module.exports = mongoose.models.Project || mongoose.model("Project", ProjectSchema);

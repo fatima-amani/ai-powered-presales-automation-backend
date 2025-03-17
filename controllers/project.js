@@ -75,18 +75,32 @@ module.exports.createProject = async (req, res) => {
     }
 };
 
-// Update a project 
-// module.exports.updateProject = async (req, res) => {
-//     try {
-//         const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//         if (!updatedProject) {
-//             return res.status(404).json({ message: 'Project not found' });
-//         }
-//         res.status(200).json(updatedProject);
-//     } catch (error) {
-//         res.status(400).json({ message: error.message });
-//     }
-// };
+module.exports.updateProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, createdBy } = req.body;
+    const userId = req.user.id; // Assuming user ID is available in req.user
+
+    const project = await Project.findById(id);
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    // Only update allowed fields if they are provided
+    if (name) project.name = name;
+    if (createdBy) project.createdBy = createdBy;
+    project.updatedAt = Date.now();
+
+    // Save with history metadata
+    await project.save({ metadata: { userId } });
+
+    res.status(200).json({ message: 'Project updated successfully', project });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // Delete a project
 module.exports.deleteProject = async (req, res) => {
@@ -160,3 +174,46 @@ module.exports.assignUserToProject = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+  module.exports.getProjectVersions = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const project = await Project.findById(id);
+  
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+  
+      const versions = await project.getVersions(); // Retrieve all versions
+  
+      res.status(200).json({ versions });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+
+  // Controller to get a specific version of a project
+module.exports.getProjectVersion = async (req, res) => {
+  try {
+    const { id, version } = req.params;
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const versions = await project.getVersions();
+    const specificVersion = versions.find(v => v.version === version);
+
+    if (!specificVersion) {
+      return res.status(404).json({ message: 'Version not found' });
+    }
+
+    res.status(200).json({ version: specificVersion });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

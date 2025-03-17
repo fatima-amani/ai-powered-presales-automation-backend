@@ -14,7 +14,7 @@ router.get('/:id', verifyToken, checkProjectAccess, projectController.getProject
 router.post('/', verifyToken, checkHeadRole, projectController.createProject);
 
 // Route to update an existing project by ID
-// router.put('/:id', projectController.updateProject);
+router.put('/:id', verifyToken, checkHeadRole, projectController.updateProject);
 
 // Route to delete a project by ID
 router.delete('/:id', verifyToken, checkProjectAccess,checkHeadRole, projectController.deleteProject);
@@ -35,5 +35,10 @@ router.post(
     checkHeadRole,
     projectController.unassignUserFromProject
   );
+
+  // Route to get project versions
+router.get('/:id/versions', projectController.getProjectVersions);
+router.get('/:id/versions/:version', projectController.getProjectVersion);
+
 
 module.exports = router;
