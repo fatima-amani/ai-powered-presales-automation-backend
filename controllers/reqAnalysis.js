@@ -33,6 +33,11 @@ const uploadRequirement = async (req, res) => {
 
         // Clear existing requirements array
         project.requirements = [];
+        project.techStacks = undefined; 
+        project.architectureDiagram = undefined;
+        project.effortEstimationUrl = undefined;
+        project.userPersona = undefined;
+        
 
         // Add new requirement
         project.requirements.push(requirement._id);
@@ -83,7 +88,7 @@ const extractRequirements = async (req, res) => {
         if (latestRequirement.functionalRequirement && latestRequirement.nonFunctionalRequirement && latestRequirement.featureBreakdown) {
             return res.status(200).json({
                 message: "Requirements already extracted",
-                requirementFileUrl:requirement.requirementFileUrl,
+                requirementFileUrl: latestRequirement.requirementFileUrl,
                 functionalRequirement: latestRequirement.functionalRequirement,
                 nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
                 featureBreakdown: latestRequirement.featureBreakdown
@@ -96,8 +101,6 @@ const extractRequirements = async (req, res) => {
             return res.status(400).json({ error: "Requirement file URL is missing" });
         }
 
-        // console.log("Sending PDF URL to FastAPI server:", pdfUrl);
-
         // Send the PDF URL to the FastAPI server
         const response = await fetch("http://localhost:8000/extract", {
             method: "POST",
@@ -108,7 +111,6 @@ const extractRequirements = async (req, res) => {
         });
 
         const result = await response.json();
-        // console.log("FastAPI Response:", result);
 
         if (!response.ok) {
             throw new Error(`FastAPI Error: ${result.error || "Unknown error"}`);
@@ -124,10 +126,14 @@ const extractRequirements = async (req, res) => {
 
         // Save the updated requirement
         await latestRequirement.save();
+        
+        // This line had an error - fixed it
+        // Previously: await project.findOneAndUpdate({requirements:latestRequirement._id});
+        // No need to update the project since we're directly updating the requirement
 
         return res.status(200).json({
             message: "PDF URL sent successfully and requirements extracted",
-            requirementFileUrl:requirement.requirementFileUrl,
+            requirementFileUrl: latestRequirement.requirementFileUrl,
             functionalRequirement: latestRequirement.functionalRequirement,
             nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
             featureBreakdown: latestRequirement.featureBreakdown
@@ -135,9 +141,7 @@ const extractRequirements = async (req, res) => {
 
     } catch (error) {
         console.error("Extract Requirements Error:", error);
-
         const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-        
         res.status(500).json({ error: errorMessage || "Internal Server Error" });
     }
 };
@@ -151,9 +155,7 @@ const extractRequirementsVersion = async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
     
-        // Correct population with nested path
         const versions = await project.getVersions();
-    
         const specificVersion = versions.find(v => v.version === version);
     
         if (!specificVersion) {
@@ -175,7 +177,7 @@ const extractRequirementsVersion = async (req, res) => {
         if (requirement.functionalRequirement && requirement.nonFunctionalRequirement && requirement.featureBreakdown) {
             return res.status(200).json({
                 message: "Requirements already extracted",
-                requirementFileUrl:requirement.requirementFileUrl,
+                requirementFileUrl: requirement.requirementFileUrl,
                 functionalRequirement: requirement.functionalRequirement,
                 nonFunctionalRequirement: requirement.nonFunctionalRequirement,
                 featureBreakdown: requirement.featureBreakdown
@@ -188,8 +190,6 @@ const extractRequirementsVersion = async (req, res) => {
             return res.status(400).json({ error: "Requirement file URL is missing" });
         }
 
-        // console.log("Sending PDF URL to FastAPI server:", pdfUrl);
-
         // Send the PDF URL to the FastAPI server
         const response = await fetch("http://localhost:8000/extract", {
             method: "POST",
@@ -200,7 +200,6 @@ const extractRequirementsVersion = async (req, res) => {
         });
 
         const result = await response.json();
-        // console.log("FastAPI Response:", result);
 
         if (!response.ok) {
             throw new Error(`FastAPI Error: ${result.error || "Unknown error"}`);
@@ -217,9 +216,13 @@ const extractRequirementsVersion = async (req, res) => {
         // Save the updated requirement
         await requirement.save();
 
+        // Update the versioned project with the updated requirement
+        // This is already handled since we're updating the requirement directly
+        // and the version references the requirement by ID
+
         return res.status(200).json({
             message: "PDF URL sent successfully and requirements extracted",
-            requirementFileUrl:requirement.requirementFileUrl,
+            requirementFileUrl: requirement.requirementFileUrl,
             functionalRequirement: requirement.functionalRequirement,
             nonFunctionalRequirement: requirement.nonFunctionalRequirement,
             featureBreakdown: requirement.featureBreakdown
