@@ -83,6 +83,7 @@ const extractRequirements = async (req, res) => {
         if (latestRequirement.functionalRequirement && latestRequirement.nonFunctionalRequirement && latestRequirement.featureBreakdown) {
             return res.status(200).json({
                 message: "Requirements already extracted",
+                requirementFileUrl:requirement.requirementFileUrl,
                 functionalRequirement: latestRequirement.functionalRequirement,
                 nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
                 featureBreakdown: latestRequirement.featureBreakdown
@@ -126,6 +127,7 @@ const extractRequirements = async (req, res) => {
 
         return res.status(200).json({
             message: "PDF URL sent successfully and requirements extracted",
+            requirementFileUrl:requirement.requirementFileUrl,
             functionalRequirement: latestRequirement.functionalRequirement,
             nonFunctionalRequirement: latestRequirement.nonFunctionalRequirement,
             featureBreakdown: latestRequirement.featureBreakdown
@@ -173,6 +175,7 @@ const extractRequirementsVersion = async (req, res) => {
         if (requirement.functionalRequirement && requirement.nonFunctionalRequirement && requirement.featureBreakdown) {
             return res.status(200).json({
                 message: "Requirements already extracted",
+                requirementFileUrl:requirement.requirementFileUrl,
                 functionalRequirement: requirement.functionalRequirement,
                 nonFunctionalRequirement: requirement.nonFunctionalRequirement,
                 featureBreakdown: requirement.featureBreakdown
@@ -216,6 +219,7 @@ const extractRequirementsVersion = async (req, res) => {
 
         return res.status(200).json({
             message: "PDF URL sent successfully and requirements extracted",
+            requirementFileUrl:requirement.requirementFileUrl,
             functionalRequirement: requirement.functionalRequirement,
             nonFunctionalRequirement: requirement.nonFunctionalRequirement,
             featureBreakdown: requirement.featureBreakdown
