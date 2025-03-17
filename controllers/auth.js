@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/user");
+// const { copySync } = require("fs-extra");
 
 require("dotenv").config();
 
@@ -58,6 +59,7 @@ module.exports.login = async (req, res) => {
 
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
