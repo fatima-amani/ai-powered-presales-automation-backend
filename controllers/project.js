@@ -241,36 +241,55 @@ module.exports.assignUserToProject = async (req, res) => {
         return res.status(404).json({ message: 'Project not found' });
       }
   
-      const versions = await project.getVersions(); // Retrieve all versions
+      // First get the versions
+      const versions = await project.getVersions();
+      
+      for (const version of versions) {
+        if (version.object && version.object.updatedBy) {
+          const user = await User.findById(version.object.updatedBy);
+          if (user) version.object.updatedBy = {
+            userId: user._id,
+            name: user.name
+          };
+        }
+      }
   
-      res.status(200).json({ versions });
+      res.status(200).json({ versions: versions });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+  
+  module.exports.getProjectVersion = async (req, res) => {
+    try {
+      const { id, version } = req.params;
+      const project = await Project.findById(id);
+  
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+  
+      // Correct population with nested path
+      const versions = await project.getVersions();
+  
+      const specificVersion = versions.find(v => v.version === version);
+  
+      if (!specificVersion) {
+        return res.status(404).json({ message: 'Version not found' });
+      }
 
-
-  // Controller to get a specific version of a project
-module.exports.getProjectVersion = async (req, res) => {
-  try {
-    const { id, version } = req.params;
-    const project = await Project.findById(id);
-
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      if (specificVersion.object && specificVersion.object.updatedBy) {
+        const user = await User.findById(specificVersion.object.updatedBy);
+        if (user) specificVersion.object.updatedBy = {
+          userId: user._id,
+          name: user.name
+        };
+      }
+  
+      res.status(200).json({ version: specificVersion });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-
-    const versions = await project.getVersions();
-    const specificVersion = versions.find(v => v.version === version);
-
-    if (!specificVersion) {
-      return res.status(404).json({ message: 'Version not found' });
-    }
-
-    res.status(200).json({ version: specificVersion });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+  };
