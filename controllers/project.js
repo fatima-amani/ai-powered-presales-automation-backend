@@ -32,7 +32,7 @@ module.exports.getAllProjects = async (req, res) => {
         }
 
         return {
-          version: version.version, // e.g. "1.0.0"
+          version: version.version, 
           updatedBy: updatedByName,
           timestamp: version.timestamp
         };
@@ -114,6 +114,7 @@ module.exports.createProject = async (req, res) => {
         const project = new Project({
             name,
             createdBy,
+            updatedBy: createdBy,
             requirements: [], // Initialize requirements as an empty array
         });
 
@@ -145,6 +146,7 @@ module.exports.updateProject = async (req, res) => {
     project.updatedAt = Date.now();
 
     // Save with history metadata
+    project.updatedBy = req.user.id;
     await project.save({ metadata: { userId } });
 
     res.status(200).json({ message: 'Project updated successfully', project });
@@ -188,6 +190,7 @@ module.exports.assignUserToProject = async (req, res) => {
       }
   
       project.assignedUsers.push(userId);
+      project.updatedBy = req.user.id;
       await project.save({ metadata: { userId: req.user.id } });
   
       res.status(200).json({ message: "User assigned successfully", project });
@@ -219,7 +222,8 @@ module.exports.assignUserToProject = async (req, res) => {
       project.assignedUsers = project.assignedUsers.filter(
         (assignedUserId) => assignedUserId.toString() !== userId
       );
-  
+      
+      project.updatedBy = req.user.id;
       await project.save({ metadata: { userId: req.user.id } });
   
       res.status(200).json({ message: "User unassigned successfully", project });
