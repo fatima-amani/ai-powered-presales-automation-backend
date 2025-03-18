@@ -13,6 +13,7 @@ const ProjectSchema = new mongoose.Schema({
     architectureDiagram: { type: mongoose.Schema.Types.ObjectId, ref: "ArchitectureDiagram" },
     effortEstimationUrl: { type: String },
     userPersona: { type: mongoose.Schema.Types.ObjectId, ref: "UserPersona" },
+    wireframe: { type: mongoose.Schema.Types.ObjectId, ref: "Wireframe" }
 });
 
 // Options for the history plugin - without mongoose parameter

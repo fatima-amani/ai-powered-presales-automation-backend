@@ -133,6 +133,10 @@ const extractRequirements = async (req, res) => {
       body: JSON.stringify({
         url: pdfUrl,
         requirement_text: latestRequirement.requirementText,
+        requirement_tech_stack: JSON.stringify(
+          latestRequirement.techStackPreferences
+        ),
+        requirement_platforms: JSON.stringify(latestRequirement.platforms),
       }),
     });
 

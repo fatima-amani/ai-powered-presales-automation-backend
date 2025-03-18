@@ -58,6 +58,10 @@ module.exports.generateTechStack = async (req, res) => {
       nonFunctionalRequirement:
         latestRequirement.nonFunctionalRequirement || [],
       featureBreakdown: latestRequirement.featureBreakdown || [],
+      requirement_tech_stack: JSON.stringify(
+        latestRequirement.techStackPreferences
+      ),
+      requirement_platforms: JSON.stringify(latestRequirement.platforms),
     };
 
     const techStackResponse = await fetch(
@@ -98,6 +102,7 @@ module.exports.generateTechStack = async (req, res) => {
 
     // Update the project reference
     project.techStacks = newTechStack._id;
+    project.updatedBy = req.user.id;
     await project.save();
 
     return res.status(200).json({
@@ -168,6 +173,7 @@ module.exports.generateArchitectureDiagram = async (req, res) => {
       nonFunctionalRequirement:
         latestRequirement.nonFunctionalRequirement || [],
       featureBreakdown: latestRequirement.featureBreakdown || [],
+      
     };
 
     const techStack = await TechStack.findById(project.techStacks);
