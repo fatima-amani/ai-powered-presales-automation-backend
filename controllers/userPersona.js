@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const UserPersona = require("../models/userPersona");
 const Project = require("../models/project");
+const Requirement = require("../models/Requirement")
 
 module.exports.generateUserPersona = async (req, res) => {
   try {
@@ -30,9 +31,12 @@ module.exports.generateUserPersona = async (req, res) => {
         .json({ error: "No requirements found for this project." });
     }
 
-    const latestRequirement =
-      project.requirements[project.requirements.length - 1];
+    // console.log(project);
+    let latestRequirement =
+      project.requirements[0];
+    // console.log(latestRequirement);
 
+    latestRequirement = await Requirement.findById(latestRequirement);
     // Prepare request body for FastAPI
     const requestBody = {
       requirement_json: {

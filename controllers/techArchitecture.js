@@ -51,7 +51,7 @@ module.exports.generateTechStack = async (req, res) => {
         error: "Feature breakdown missing. Extract requirements first.",
       });
     }
-
+    
     // Prepare FastAPI request
     const techStackRequestBody = {
       functionalRequirement: latestRequirement.functionalRequirement || [],
