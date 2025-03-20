@@ -52,17 +52,18 @@ module.exports.generateTechStack = async (req, res) => {
       });
     }
     
+
     // Prepare FastAPI request
     const techStackRequestBody = {
       functionalRequirement: latestRequirement.functionalRequirement || [],
       nonFunctionalRequirement:
-        latestRequirement.nonFunctionalRequirement || [],
+      latestRequirement.nonFunctionalRequirement || [],
       featureBreakdown: latestRequirement.featureBreakdown || [],
-      requirement_tech_stack: JSON.stringify(
-        latestRequirement.techStackPreferences
-      ),
+      requirement_tech_stack: JSON.stringify(latestRequirement.techStackPreferences),
       requirement_platforms: JSON.stringify(latestRequirement.platforms),
     };
+
+    // console.log(techStackRequestBody);
 
     const techStackResponse = await fetch(
       "http://localhost:8000/tech-stack-recommendation",
