@@ -37,8 +37,9 @@ module.exports.generateWireFrame = async (req, res) => {
     });
 
     // Get the latest requirement
-    const latestRequirement =
+    let latestRequirement =
       requirements.length > 0 ? requirements[requirements.length - 1] : null;
+    latestRequirement = await Requirement.findById(latestRequirement);
     if (!latestRequirement?.featureBreakdown) {
       return res.status(400).json({
         error: "Feature breakdown missing. Extract requirements first.",
@@ -46,8 +47,10 @@ module.exports.generateWireFrame = async (req, res) => {
     }
 
     const requestBody = {
-      featureBreakdown: latestRequirement.featureBreakdown || [],
+      featureBreakdown: latestRequirement.featureBreakdown, 
     };
+
+    // console.log(requestBody);
 
     const apiResponse = await fetch(
       "http://localhost:8000/generate-wireframe",
@@ -74,11 +77,11 @@ module.exports.generateWireFrame = async (req, res) => {
 
     console.log("Wireframe Data:", responseData);
 
-    if (!responseData?.data?.pages) {
+    if (!responseData?.data) {
       throw new Error("Wireframe pages missing in API response");
     }
 
-    const wireframe = new Wireframe({ pages: responseData.data.pages }); // ✅ Correct!
+    const wireframe = new Wireframe({ image_link: responseData.data });
     await wireframe.save();
 
     project.wireframe = wireframe._id;
@@ -87,7 +90,7 @@ module.exports.generateWireFrame = async (req, res) => {
 
     return res.status(200).json({
       message: "Wireframe generated successfully",
-      wireframeData: responseData,
+      wireframe: wireframe,
     });
   } catch (error) {
     console.error("Wireframe Generation Error:", error);
