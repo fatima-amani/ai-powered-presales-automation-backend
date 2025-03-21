@@ -1,45 +1,65 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const Project = require("../models/project"); // Adjust path if needed
+const Project = require("../models/project"); 
+const Requirement = require("../models/Requirement");
+const TechStack = require("../models/TechStack");
+const ArchitectureDiagram = require("../models/ArchitectureDiagram");
+const UserPersona = require("../models/UserPersona");
+const Wireframe = require("../models/Wireframe");
 
-// MongoDB Connection
-const connectDB = async () => {
+async function deleteProjectAndDependencies(projectId) {
     try {
-        await mongoose.connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("MongoDB Connected ✅");
-    } catch (error) {
-        console.error("MongoDB Connection Error:", error);
-        process.exit(1);
-    }
-};
+        await mongoose.connect(process.env.MONGO_URL); 
 
-// Function to delete the `techStacks` field
-const deleteTechStacksField = async () => {
-    try {
-        await connectDB();
+        const project = await Project.findById(projectId).exec();
 
-        const projectId = "67c9b4d7c7f46698c466f16a"; // Replace with your project ID
-
-        // Use $unset to remove the `techStacks` field
-        const result = await Project.updateOne(
-            { _id: projectId }, // Filter by project ID
-            { $unset: { techStacks: "" } } // Remove the `techStacks` field
-        );
-
-        if (result.modifiedCount > 0) {
-            console.log("✅ `techStacks` field deleted successfully.");
-        } else {
-            console.log("⚠️ No document was updated. Check if the project ID is correct.");
+        if (!project) {
+            console.log("Project not found.");
+            return;
         }
 
-        mongoose.connection.close();
-    } catch (error) {
-        console.error("Error deleting `techStacks` field:", error);
-    }
-};
+        // Delete Requirements
+        if (project.requirements && project.requirements.length > 0) {
+            await Requirement.deleteMany({ _id: { $in: project.requirements } });
+            console.log(`Deleted ${project.requirements.length} requirements.`);
+        }
 
-// Run the function
-deleteTechStacksField();
+        // Delete Tech Stack
+        if (project.techStacks) {
+            await TechStack.findByIdAndDelete(project.techStacks);
+            console.log("Deleted Tech Stack.");
+        }
+
+        // Delete Architecture Diagram
+        if (project.architectureDiagram) {
+            await ArchitectureDiagram.findByIdAndDelete(project.architectureDiagram);
+            console.log("Deleted Architecture Diagram.");
+        }
+
+        // Delete User Persona
+        if (project.userPersona) {
+            await UserPersona.findByIdAndDelete(project.userPersona);
+            console.log("Deleted User Persona.");
+        }
+
+        // Delete Wireframe
+        if (project.wireframe) {
+            await Wireframe.findByIdAndDelete(project.wireframe);
+            console.log("Deleted Wireframe.");
+        }
+
+        // Delete the Project itself
+        await Project.findByIdAndDelete(projectId);
+        console.log(`Deleted Project with ID ${projectId}.`);
+
+        await mongoose.disconnect();
+        console.log("Disconnected from database.");
+    } catch (err) {
+        console.error("Error deleting project and dependencies:", err);
+        mongoose.disconnect();
+    }
+}
+
+// Usage
+const projectId = "67dbabad99c7b442c08d48b6"; // Replace with actual project ID
+deleteProjectAndDependencies(projectId);

@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const UserPersona = require("../models/userPersona");
+const UserPersona = require("../models/UserPersona");
 const Project = require("../models/project");
 const Requirement = require("../models/Requirement")
 
