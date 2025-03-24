@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const Project = require("../models/project");
+const Project = require("../models/Project");
 const TechStack = require("../models/techStack");
 const ArchitectureDiagram = require("../models/architectureDiagram");
 const Requirement = require("../models/Requirement");

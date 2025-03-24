@@ -1,5 +1,5 @@
 const { cloudinary } = require("../config/cloudinaryConfig");
-const Project = require("../models/project");
+const Project = require("../models/Project");
 const Requirement = require("../models/Requirement");
 require("dotenv").config();
 
