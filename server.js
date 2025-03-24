@@ -22,11 +22,14 @@ const AuthRoutes = require("./routes/auth");
 const dbUrl = process.env.MONGO_URL;
 
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,  // Add this line
+  origin: function (origin, callback) {
+    callback(null, origin); // Allow all origins dynamically
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
 
 app.use(express.json());
 app.use(cookieParser()); // Enable cookie parsing
