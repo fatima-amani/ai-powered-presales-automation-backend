@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const multer = require("multer");
 const { cloudinary, storage } = require("../config/cloudinaryConfig");
-const Project = require("../models/project");
+const Project = require("../models/Project");
 const Requirement = require("../models/Requirement");
 const fs = require("fs-extra");
 const path = require("path");

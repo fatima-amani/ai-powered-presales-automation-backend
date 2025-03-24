@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 const UserPersona = require("../models/UserPersona");
-const Project = require("../models/project");
+const Project = require("../models/Project");
 const Requirement = require("../models/Requirement")
 require("dotenv").config();
 

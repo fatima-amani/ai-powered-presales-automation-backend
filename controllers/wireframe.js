@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const Project = require("../models/project");
+const Project = require("../models/Project");
 const Wireframe = require("../models/Wireframe");
 const Requirement = require("../models/Requirement");
 require("dotenv").config();

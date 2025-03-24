@@ -1,5 +1,5 @@
-const Project = require('../models/project');
-const User = require('../models/user');
+const Project = require('../models/Project');
+const User = require('../models/User');
 
 // Get all projects
 module.exports.getAllProjects = async (req, res) => {
