@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const Project = require("../models/Project");
-const TechStack = require("../models/techStack");
-const ArchitectureDiagram = require("../models/architectureDiagram");
+const TechStack = require("../models/TechStack");
+const ArchitectureDiagram = require("../models/ArchitectureDiagram");
 const Requirement = require("../models/Requirement");
 require("dotenv").config();
 

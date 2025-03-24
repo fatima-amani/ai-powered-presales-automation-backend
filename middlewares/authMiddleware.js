@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Project = require("../models/Project");
 const mongoose = require("mongoose");
-const User = require("../models/user");
+const User = require("../models/User");
 
 require("dotenv").config();
 
