@@ -46,11 +46,22 @@ module.exports.generateWireFrame = async (req, res) => {
       });
     }
 
+    console.log(latestRequirement);
+    let isMobileApp;
+    if(latestRequirement.platform && latestRequirement.platform[0] == "Website") {
+      isMobileApp = false;
+    }
+    else {
+      isMobileApp = true;
+    }
+    
+
     const requestBody = {
       featureBreakdown: latestRequirement.featureBreakdown, 
+      isMobileApp : isMobileApp
     };
 
-    // console.log(requestBody);
+    console.log(requestBody);
 
     const apiResponse = await fetch(
       "http://localhost:8000/generate-wireframe",
