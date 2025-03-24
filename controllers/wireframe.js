@@ -2,6 +2,8 @@ const fetch = require("node-fetch");
 const Project = require("../models/project");
 const Wireframe = require("../models/Wireframe");
 const Requirement = require("../models/Requirement");
+require("dotenv").config();
+
 
 module.exports.generateWireFrame = async (req, res) => {
   try {
@@ -64,7 +66,7 @@ module.exports.generateWireFrame = async (req, res) => {
     console.log(requestBody);
 
     const apiResponse = await fetch(
-      "http://localhost:8000/generate-wireframe",
+      `${process.env.BACKEND_URL}/generate-wireframe`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

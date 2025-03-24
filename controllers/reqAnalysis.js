@@ -1,6 +1,7 @@
 const { cloudinary } = require("../config/cloudinaryConfig");
 const Project = require("../models/project");
 const Requirement = require("../models/Requirement");
+require("dotenv").config();
 
 const uploadRequirement = async (req, res) => {
   try {
@@ -125,7 +126,7 @@ const extractRequirements = async (req, res) => {
     }
 
     // Send the PDF URL to the FastAPI server
-    const response = await fetch("http://localhost:8000/extract", {
+    const response = await fetch(`${process.env.BACKEND_URL}/extract`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -228,7 +229,7 @@ const extractRequirementsVersion = async (req, res) => {
     }
 
     // Send the PDF URL to the FastAPI server
-    const response = await fetch("http://localhost:8000/extract", {
+    const response = await fetch(`${process.env.BACKEND_URL}/extract`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -3,6 +3,7 @@ const Project = require("../models/project");
 const TechStack = require("../models/techStack");
 const ArchitectureDiagram = require("../models/architectureDiagram");
 const Requirement = require("../models/Requirement");
+require("dotenv").config();
 
 module.exports.generateTechStack = async (req, res) => {
   try {
@@ -66,7 +67,7 @@ module.exports.generateTechStack = async (req, res) => {
     // console.log(techStackRequestBody);
 
     const techStackResponse = await fetch(
-      "http://localhost:8000/tech-stack-recommendation",
+      `${process.env.BACKEND_URL}/tech-stack-recommendation`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,7 +167,7 @@ module.exports.reGenerateTechStack = async (req, res) => {
     // console.log(techStackRequestBody);
 
     const techStackResponse = await fetch(
-      "http://localhost:8000/tech-stack-recommendation",
+      `${process.env.BACKEND_URL}/tech-stack-recommendation`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -285,7 +286,7 @@ module.exports.generateArchitectureDiagram = async (req, res) => {
     }
 
     const apiResponse = await fetch(
-      "http://localhost:8000/architecture-diagram",
+      `${process.env.BACKEND_URL}/architecture-diagram`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -377,7 +378,7 @@ module.exports.reGenerateArchitectureDiagram = async (req, res) => {
     }
 
     const apiResponse = await fetch(
-      "http://localhost:8000/architecture-diagram",
+      `${process.env.BACKEND_URL}/architecture-diagram`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -514,7 +515,7 @@ module.exports.getTechStackByVersion = async (req, res) => {
     };
 
     const techStackResponse = await fetch(
-      "http://localhost:8000/tech-stack-recommendation",
+      `${process.env.BACKEND_URL}/tech-stack-recommendation`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -640,7 +641,7 @@ module.exports.getArchitectureDiagramByVersion = async (req, res) => {
     }
 
     const apiResponse = await fetch(
-      "http://localhost:8000/architecture-diagram",
+      `${process.env.BACKEND_URL}/architecture-diagram`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

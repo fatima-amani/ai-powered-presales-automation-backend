@@ -5,6 +5,7 @@ const Project = require("../models/project");
 const Requirement = require("../models/Requirement");
 const fs = require("fs-extra");
 const path = require("path");
+require("dotenv").config();
 
 // Initialize multer with cloudinary storage
 const upload = multer({ storage });
@@ -58,7 +59,7 @@ module.exports.generateEffortEstimation = async (req, res) => {
     };
 
     // Call FastAPI endpoint
-    const apiResponse = await fetch("http://localhost:8000/estimate", {
+    const apiResponse = await fetch(`${process.env.BACKEND_URL}/estimate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
@@ -157,7 +158,7 @@ module.exports.reGenerateEffortEstimation = async (req, res) => {
     };
 
     // Call FastAPI endpoint
-    const apiResponse = await fetch("http://localhost:8000/estimate", {
+    const apiResponse = await fetch(`${process.env.BACKEND_URL}/estimate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),

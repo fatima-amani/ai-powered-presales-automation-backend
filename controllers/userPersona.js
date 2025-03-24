@@ -2,6 +2,8 @@ const fetch = require("node-fetch");
 const UserPersona = require("../models/UserPersona");
 const Project = require("../models/project");
 const Requirement = require("../models/Requirement")
+require("dotenv").config();
+
 
 module.exports.generateUserPersona = async (req, res) => {
   try {
@@ -51,7 +53,7 @@ module.exports.generateUserPersona = async (req, res) => {
 
     // Call FastAPI to generate user persona
     const apiResponse = await fetch(
-      "http://localhost:8000/generate-user-persona",
+      `${process.env.BACKEND_URL}/generate-user-persona`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -144,7 +146,7 @@ module.exports.reGenerateUserPersona = async (req, res) => {
 
     // Call FastAPI to generate user persona
     const apiResponse = await fetch(
-      "http://localhost:8000/generate-user-persona",
+      `${process.env.BACKEND_URL}/generate-user-persona`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
