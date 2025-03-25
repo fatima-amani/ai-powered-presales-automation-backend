@@ -59,7 +59,7 @@ const uploadRequirement = async (req, res) => {
 
     // Add new requirement
     project.requirements.push(requirement._id);
-    project.updatedBy = req.user.id;
+    project.updatedBy = req.user.id; 
 
     // Save project
     await project.save({ metadata: { userId: req.user.id } });

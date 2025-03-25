@@ -21,11 +21,10 @@ const AuthRoutes = require("./routes/auth");
 
 const dbUrl = process.env.MONGO_URL;
 
+
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, origin); // Allow all origins dynamically
-  },
-  credentials: true,
+  origin: 'http://localhost:3000',
+  credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
